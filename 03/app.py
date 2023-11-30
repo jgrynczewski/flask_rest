@@ -64,6 +64,7 @@ def new_year():
 
     return render_template('isitnewyear.html', is_new_year=is_new_year)
 
+
 @app.route("/jinja")
 def jinja():
 
