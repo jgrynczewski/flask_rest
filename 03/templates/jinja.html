@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  {{ fruits }}
+
+  <ul>
+    {#
+      Komentarze jinja
+    #}
+    {# iterowanie po liscie #}
+  {% for item in fruits %}
+    <li>{{ item }}</li>
+  {% endfor %}
+
+    {# iterowanie po slowniku #}
+    {% for key, value in user.items() %}
+      <p>{{ key }} = {{ value }}</p>
+    {% endfor %}
+
+    {# indeksowanie #}
+    {{ fruits[1] }}
+    {{ fruits.1 }}
+    <p></p>
+    {# lookup w slownika #}
+    {{ user['name'] }}
+    {{ user.name }}
+
+    <p></p>
+    {# atrybuty obiektu #}
+    {{ cow.name }}
+    {{ cow['name'] }}
+
+    {{ cow.name | upper }}
+
+  </ul>
+</body>
+</html>

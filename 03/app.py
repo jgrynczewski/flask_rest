@@ -64,7 +64,28 @@ def new_year():
 
     return render_template('isitnewyear.html', is_new_year=is_new_year)
 
+@app.route("/jinja")
+def jinja():
 
+    class Cow():
+        def __init__(self, name, age):
+            self.name = name
+            self.age = age
+
+    return render_template(
+        "jinja.html",
+        fruits=[
+            "jablko",
+            "banan",
+            "gruszka"
+        ],
+        user={
+            "name": "John",
+            "surename": "Doe",
+            "age": 20
+        },
+        cow=Cow("Mućka", 2)
+    )
 
 
 if __name__ == "__main__":
