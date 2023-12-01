@@ -48,7 +48,26 @@ def task_detail_view(task_id):
         task=task
     )
 
-# U i D
+# U z CRUD
+@app.route("/tasks/<int:task_id>/update", methods=["GET", "POST"])
+def task_update_view(task_id):
+    if task_id <= 0 or task_id > len(TASKS):
+        abort(404)
+
+    if request.method == "GET":
+        task = TASKS[task_id - 1]
+
+        return render_template(
+            'task_update.html',
+            task_id=task_id,
+            task=task
+        )
+
+    if request.method == "POST":
+        updated_task = request.form.get('task')
+        TASKS[task_id - 1] = updated_task
+
+        return redirect(url_for("task_list_view"))
 
 
 if __name__ == "__main__":
