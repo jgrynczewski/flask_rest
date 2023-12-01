@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj zadanie</title>
+</head>
+<body>
+    <h3>Modyfikacja zadania o numerze {{ task.id }}</h3>
+    <form method="POST">
+        <input type="text" name="task" value="{{ task.name }}" placeholder="task">
+        <input type="submit" value="Zapisz">
+    </form>
+</body>
+</html>
