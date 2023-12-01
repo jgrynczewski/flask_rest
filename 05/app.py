@@ -48,14 +48,16 @@ def task_detail_view(task_id):
         task=task
     )
 
+
 # U z CRUD
 @app.route("/tasks/<int:task_id>/update", methods=["GET", "POST"])
 def task_update_view(task_id):
     if task_id <= 0 or task_id > len(TASKS):
         abort(404)
 
+    task = TASKS[task_id - 1]
+
     if request.method == "GET":
-        task = TASKS[task_id - 1]
 
         return render_template(
             'task_update.html',
@@ -66,6 +68,28 @@ def task_update_view(task_id):
     if request.method == "POST":
         updated_task = request.form.get('task')
         TASKS[task_id - 1] = updated_task
+
+        return redirect(url_for("task_list_view"))
+
+
+# D z CRUD
+@app.route("/tasks/<int:task_id>/delete", methods=["GET", "POST"])
+def task_delete_view(task_id):
+    if task_id <= 0 or task_id > len(TASKS):
+        abort(404)
+
+    task = TASKS[task_id -1 ]
+
+    if request.method == "GET":
+        return render_template(
+            'task_delete.html',
+            task_id=task_id,
+            task=task
+        )
+
+    if request.method == "POST":
+        if "yes" in request.form:
+            TASKS.pop(task_id-1)
 
         return redirect(url_for("task_list_view"))
 
