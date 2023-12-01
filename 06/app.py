@@ -1,10 +1,19 @@
-# CRUD ram
+# CRUD db
 from flask import Flask, render_template, request, redirect, url_for, abort
+from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.sqlite3"
+
+db = SQLAlchemy(app)
 
 TASKS = []
+
+
+class Task(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
 
 
 # C z CRUD
@@ -18,9 +27,12 @@ def task_create_view():
 
     # POST
     if request.method == "POST":
-        task = request.form.get('task')
-        if task:
-            TASKS.append(task)
+        task_name = request.form.get('task')
+
+        if task_name:
+            task = Task(name=task_name)
+            db.session.add(task)
+            db.session.commit()
 
         return redirect(url_for("task_list_view"))
 
@@ -30,21 +42,17 @@ def task_create_view():
 def task_list_view():
     return render_template(
         'task_list.html',
-        tasks=TASKS
+        tasks=Task.query.all()
     )
 
 
 # R (szczegól) z CRUD
 @app.route("/tasks/<int:task_id>")
 def task_detail_view(task_id):
-    if task_id <= 0 or task_id > len(TASKS):
-        abort(404)
-
-    task = TASKS[task_id-1]
+    task = Task.query.get_or_404(task_id)
 
     return render_template(
         'task_detail.html',
-        task_id=task_id,
         task=task
     )
 
@@ -52,22 +60,18 @@ def task_detail_view(task_id):
 # U z CRUD
 @app.route("/tasks/<int:task_id>/update", methods=["GET", "POST"])
 def task_update_view(task_id):
-    if task_id <= 0 or task_id > len(TASKS):
-        abort(404)
-
-    task = TASKS[task_id - 1]
+    task = Task.query.get_or_404(task_id)
 
     if request.method == "GET":
-
         return render_template(
             'task_update.html',
-            task_id=task_id,
             task=task
         )
 
     if request.method == "POST":
         updated_task = request.form.get('task')
-        TASKS[task_id - 1] = updated_task
+        task.name = updated_task
+        db.session.commit()
 
         return redirect(url_for("task_list_view"))
 
@@ -75,21 +79,18 @@ def task_update_view(task_id):
 # D z CRUD
 @app.route("/tasks/<int:task_id>/delete", methods=["GET", "POST"])
 def task_delete_view(task_id):
-    if task_id <= 0 or task_id > len(TASKS):
-        abort(404)
-
-    task = TASKS[task_id -1 ]
+    task = Task.query.get_or_404(task_id)
 
     if request.method == "GET":
         return render_template(
             'task_delete.html',
-            task_id=task_id,
             task=task
         )
 
     if request.method == "POST":
         if "yes" in request.form:
-            TASKS.pop(task_id-1)
+            db.session.delete(task)
+            db.session.commit()
 
         return redirect(url_for("task_list_view"))
 
